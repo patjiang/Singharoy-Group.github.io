@@ -70,6 +70,28 @@ const years = Object.keys(grouped).map(Number).sort((a, b) => b - a);
     margin: 0;
   }
 
+  .searchContainer {
+    margin-top: 1.5rem;
+    max-width: 500px;
+    position: relative;
+  }
+
+  .searchInput {
+    width: 100%;
+    padding: 0.85rem 1.2rem;
+    border-radius: 999px;
+    border: 1px solid rgba(0,0,0,0.1);
+    background: white;
+    font-size: 1.05rem;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+    outline: none;
+    transition: border-color 0.2s ease;
+  }
+
+  .searchInput:focus {
+    border-color: rgba(99,102,241,0.5);
+  }
+
   .ctaRow {
     display: flex;
     flex-wrap: wrap;
@@ -84,16 +106,18 @@ const years = Object.keys(grouped).map(Number).sort((a, b) => b - a);
     padding: .72rem 1.05rem;
     border-radius: 999px;
     border: 1px solid rgba(0,0,0,.10);
-    background: rgba(0,0,0,.92);
-    color: rgba(255,255,255,.95);
+    background: rgba(0,0,0,0.05);
+    color: rgba(0,0,0,.86);
     text-decoration: none;
-    font-size: 1.02rem;
+    font-size: 0.95rem;
     font-weight: 700;
   }
 
   .yearSection {
     margin-top: 1.35rem;
   }
+
+  .yearSection.hidden { display: none; }
 
   .yearHeader {
     margin: 0 0 .7rem 0;
@@ -112,7 +136,10 @@ const years = Object.keys(grouped).map(Number).sort((a, b) => b - a);
     border: 1px solid rgba(0,0,0,.06);
     box-shadow: 0 12px 28px rgba(0,0,0,.07);
     padding: 1.1rem 1.15rem 1rem 1.15rem;
+    transition: transform 0.2s ease;
   }
+
+  .pubCard.hidden { display: none; }
 
   .pubTitle {
     margin: 0;
@@ -162,9 +189,17 @@ const years = Object.keys(grouped).map(Number).sort((a, b) => b - a);
       <p class="kicker">Publications</p>
       <h1>Selected publications.</h1>
       <p class="lead">
-        This page highlights publications connected to the Systems Structural Biology Group.
-        For the most complete and continuously updated list, use the Google Scholar profile link below.
+        Search our research by title, author, or keyword. For the most complete list, visit Google Scholar.
       </p>
+
+      <div class="searchContainer">
+        <input 
+          type="text" 
+          id="pubSearch" 
+          placeholder="Search publications..." 
+          class="searchInput"
+        />
+      </div>
 
       <div class="ctaRow">
         <a
@@ -173,30 +208,74 @@ const years = Object.keys(grouped).map(Number).sort((a, b) => b - a);
           target="_blank"
           rel="noopener noreferrer"
         >
-          Full list on Google Scholar
+          View on Google Scholar
         </a>
       </div>
     </section>
 
-    {years.map((year) => (
-      <section class="yearSection">
-        <h2 class="yearHeader">{year}</h2>
-        <div class="pubList">
-          {grouped[year].map((pub) => (
-            <article class="pubCard">
-              <h3 class="pubTitle">
-                <a href={pub.link} target="_blank" rel="noopener noreferrer">{pub.title}</a>
-              </h3>
-              
-              <p class="pubAuthors" set:html={formatBold(pub.authors)} />
-              
-              <p class="pubMeta">
-                {pub.venue} {pub.type && `· ${pub.type}`} {pub.note && `· ${pub.note}`}
-              </p>
-            </article>
-          ))}
-        </div>
-      </section>
-    ))}
+    <div id="pubContainer">
+      {years.map((year) => (
+        <section class="yearSection" data-year={year}>
+          <h2 class="yearHeader">{year}</h2>
+          <div class="pubList">
+            {grouped[year].map((pub) => (
+              <article 
+                class="pubCard" 
+                data-search-content={`${pub.title} ${pub.authors} ${pub.venue} ${pub.tags?.join(' ')}`.toLowerCase()}
+              >
+                <h3 class="pubTitle">
+                  <a href={pub.link} target="_blank" rel="noopener noreferrer">{pub.title}</a>
+                </h3>
+                
+                <p class="pubAuthors" set:html={formatBold(pub.authors)} />
+                
+                <p class="pubMeta">
+                  {pub.venue} {pub.type && `· ${pub.type}`} {pub.note && `· ${pub.note}`}
+                </p>
+              </article>
+            ))}
+          </div>
+        </section>
+      ))}
+    </div>
+
+    <div id="noResults" style="display: none; padding: 3rem; text-align: center; color: rgba(0,0,0,0.5);">
+      No publications match your search.
+    </div>
   </main>
 </SiteLayout>
+
+<script>
+  const searchInput = document.getElementById('pubSearch');
+  const sections = document.querySelectorAll('.yearSection');
+  const noResults = document.getElementById('noResults');
+
+  searchInput?.addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase().trim();
+    let totalVisible = 0;
+
+    sections.forEach(section => {
+      const cards = section.querySelectorAll('.pubCard');
+      let visibleInYear = 0;
+
+      cards.forEach(card => {
+        const content = card.getAttribute('data-search-content');
+        if (content.includes(term)) {
+          card.classList.remove('hidden');
+          visibleInYear++;
+          totalVisible++;
+        } else {
+          card.classList.add('hidden');
+        }
+      });
+
+      if (visibleInYear > 0) {
+        section.classList.remove('hidden');
+      } else {
+        section.classList.add('hidden');
+      }
+    });
+
+    noResults.style.display = totalVisible === 0 ? 'block' : 'none';
+  });
+</script>
