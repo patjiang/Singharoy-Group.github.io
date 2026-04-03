@@ -1,4 +1,4 @@
-# TODO:
+# TODO Deadline April 30th:
 - Add Alumni section to People page
 - Add Site map to Home page
 - Add Academic/Research/Industry Split to site Mape
