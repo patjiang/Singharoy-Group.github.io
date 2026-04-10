@@ -149,6 +149,25 @@ const stats = [
     grid-template-columns: 1.1fr .9fr;
   }
 
+  /* --- MEDIA STYLES --- */
+  .mediaContainer {
+    margin-top: 1.2rem;
+    border-radius: 18px;
+    overflow: hidden;
+    background: #000;
+    border: 1px solid rgba(0,0,0,0.05);
+    line-height: 0;
+  }
+
+  .mediaContainer img, 
+  .mediaContainer video {
+    width: 100%;
+    height: auto;
+    display: block;
+    object-fit: cover;
+  }
+  /* -------------------- */
+
   .statusRow {
     display: flex;
     flex-wrap: wrap;
@@ -332,6 +351,31 @@ const stats = [
 
                 <h2 class="projectTitle">{project.data.title}</h2>
                 <p class="projectText">{project.data.summary}</p>
+
+                {/* --- MEDIA COMPONENT --- */}
+                {(project.data.video || project.data.thumbnail) && (
+                  <div class="mediaContainer">
+                    {project.data.video ? (
+                      <video 
+                        src={withBase(project.data.video)} 
+                        poster={project.data.thumbnail ? withBase(project.data.thumbnail) : undefined}
+                        controls 
+                        muted 
+                        loop
+                        playsinline
+                      >
+                        Your browser does not support the video tag.
+                      </video>
+                    ) : (
+                      <img 
+                        src={withBase(project.data.thumbnail)} 
+                        alt={project.data.title} 
+                        loading="lazy" 
+                      />
+                    )}
+                  </div>
+                )}
+                {/* ----------------------- */}
 
                 {project.data.tags && (
                   <div class="tagRow">
