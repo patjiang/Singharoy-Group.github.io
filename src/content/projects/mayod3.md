@@ -4,6 +4,7 @@ status: "Active"
 phase: "In-Vitro Validation"
 summary: "The goal of the D3 moonshot project is to create anti-dimerization binders for FGFR systems using state-of-the-art binder generation methods along with cutting edge simulation methods"
 tags: ["Applied Deep Learning", "Biophysics", "MELD", "Thermodynamic Ensembles", "Brownian Dynamics"]
+video: "/uploads/energy_landscape.mp4"
 timeline: "2025–2027"
 lead: "Abhishek Singharoy, Mitesh Borad"
 team:
