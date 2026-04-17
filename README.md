@@ -1,4 +1,16 @@
+<<<<<<< Updated upstream
 # Astro Starter Kit: Basics
+=======
+# Test Change
+
+# TODO Deadline April 30th:
+- Add Alumni section to People page
+- Add Site map to Home page
+- Add Academic/Research/Industry Split to site Mape
+- Add Projects to Projects content page by april 2
+- Add Collaborator Page
+- Add Ramon to 
+>>>>>>> Stashed changes
 
 ```sh
 npm create astro@latest -- --template basics
