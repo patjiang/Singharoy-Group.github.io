@@ -41,7 +41,12 @@ const projects = defineCollection({
     thumbnail: z.string().optional(),
     tags: z.array(z.string()).optional(),
     links: z.array(z.string()).optional(),
-    team: z.array(z.string()).optional(),
+    team: z.array(
+      z.object({
+        name: z.string(),
+        role: z.string().optional(),
+      })
+    ).optional(),
     share_to_x: z.boolean().default(false),
   }),
 });
