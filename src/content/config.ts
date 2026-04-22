@@ -26,6 +26,7 @@ const projects = defineCollection({
     status: z.enum(["Active", "Completed"]).default("Active"),
     phase: z.string(),
     summary: z.string(),
+<<<<<<< HEAD
     link: z.string().optional(),
     link_label: z.string().optional(),
     publications: z
@@ -38,6 +39,8 @@ const projects = defineCollection({
         })
       )
       .optional(),
+=======
+>>>>>>> fcda4eb9722a2878fad0fb2ef4ab90dd90ba3f40
     video: z.string().optional(),
     thumbnail: z.string().optional(),
     tags: z.array(z.string()).optional(),

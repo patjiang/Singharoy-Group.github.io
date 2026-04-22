@@ -6,36 +6,22 @@ import { withBase as withSiteBase } from "../../lib/site";
 const base = import.meta.env.BASE_URL;
 const withBase = (path = "") => withSiteBase(base, path);
 
+<<<<<<< HEAD
+=======
+// 1. Fetch data
+>>>>>>> fcda4eb9722a2878fad0fb2ef4ab90dd90ba3f40
 const projectEntries = await getCollection("projects");
 
+// 2. Define Topic List (Must be above functions that use it)
 const topicDefinitions = [
-  {
-    slug: "structural-biology",
-    label: "Structural Biology",
-    matchTags: ["Structural Biology", "Biophysics", "Structure Prediction", "Electrostatics"],
-  },
-  {
-    slug: "complex-systems",
-    label: "Complex Systems",
-    matchTags: ["Complex Systems", "Molecular Dynamics", "Brownian Dynamics", "Thermodynamic Ensembles", "MELD"],
-  },
-  {
-    slug: "multiscale-modeling",
-    label: "Multiscale Modeling",
-    matchTags: ["Multiscale Modeling", "Molecular Dynamics", "Brownian Dynamics", "MELD", "Thermodynamic Ensembles"],
-  },
-  {
-    slug: "applied-deep-learning",
-    label: "Applied Deep Learning",
-    matchTags: ["Applied Deep Learning", "Deep Learning", "SE3 Convolutional Networks"],
-  },
-  {
-    slug: "human-computer-interaction",
-    label: "Human Computer Interaction",
-    matchTags: ["Human Computer Interaction", "STEM Education"],
-  },
+  { slug: "structural-biology", label: "Structural Biology", matchTags: ["Structural Biology", "Biophysics", "Structure Prediction", "Electrostatics"] },
+  { slug: "complex-systems", label: "Complex Systems", matchTags: ["Complex Systems", "Molecular Dynamics", "Brownian Dynamics", "Thermodynamic Ensembles", "MELD"] },
+  { slug: "multiscale-modeling", label: "Multiscale Modeling", matchTags: ["Multiscale Modeling", "Molecular Dynamics", "Brownian Dynamics", "MELD", "Thermodynamic Ensembles"] },
+  { slug: "applied-deep-learning", label: "Applied Deep Learning", matchTags: ["Applied Deep Learning", "Deep Learning", "SE3 Convolutional Networks"] },
+  { slug: "human-computer-interaction", label: "Human Computer Interaction", matchTags: ["Human Computer Interaction", "STEM Education"] },
 ];
 
+// 3. Helper Functions
 const tagMatchesTopic = (tag = "", topic) => {
   const normalizedTag = tag.toLowerCase();
   return topic.matchTags.some((matchTag) => normalizedTag.includes(matchTag.toLowerCase()));
@@ -53,18 +39,12 @@ const projectTopicMap = Object.fromEntries(
 const topicSummaries = topicDefinitions.map((topic) => {
   const projects = projectEntries.filter((project) => projectTopicMap[project.id]?.includes(topic.slug));
   const people = new Map();
-
   for (const project of projects) {
     for (const member of project.data.team ?? []) {
       people.set(member.name, member);
     }
   }
-
-  return {
-    ...topic,
-    projects,
-    people: Array.from(people.values()).sort((a, b) => a.name.localeCompare(b.name)),
-  };
+  return { ...topic, projects, people: Array.from(people.values()).sort((a, b) => a.name.localeCompare(b.name)) };
 });
 
 const stats = [
@@ -78,6 +58,7 @@ const stats = [
 <style>
   :global(html) { font-family: Arial, Helvetica, sans-serif; }
   :global(body) { background: #f6f7fb; margin: 0; color: rgba(0,0,0,.9); }
+<<<<<<< HEAD
 
   .wrap {
     max-width: 1440px;
@@ -144,69 +125,31 @@ const stats = [
     min-width: 0;
   }
 
+=======
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 2.25rem 1.25rem 3rem; }
+  
+>>>>>>> fcda4eb9722a2878fad0fb2ef4ab90dd90ba3f40
   .hero {
-    border-radius: 26px;
-    padding: 2.6rem 2rem;
-    background:
-      radial-gradient(1200px 420px at 12% 10%, rgba(99,102,241,.24), transparent 60%),
-      radial-gradient(900px 420px at 90% 0%, rgba(56,189,248,.20), transparent 55%),
-      linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.74));
-    border: 1px solid rgba(0,0,0,.06);
-    box-shadow: 0 16px 40px rgba(0,0,0,.08);
+    border-radius: 26px; padding: 2.6rem 2rem;
+    background: radial-gradient(1200px 420px at 12% 10%, rgba(99,102,241,.24), transparent 60%),
+                radial-gradient(900px 420px at 90% 0%, rgba(56,189,248,.20), transparent 55%),
+                linear-gradient(180deg, rgba(255,255,255,.92), rgba(255,255,255,.74));
+    border: 1px solid rgba(0,0,0,.06); box-shadow: 0 16px 40px rgba(0,0,0,.08);
     margin-bottom: 2rem;
   }
-
-  .heroGrid {
-    display: grid;
-    gap: 1.5rem;
-    grid-template-columns: 1.3fr .9fr;
-    align-items: center;
-  }
-
-  .kicker {
-    font-size: 0.92rem;
-    letter-spacing: .16em;
-    text-transform: uppercase;
-    color: rgba(0,0,0,.55);
-    margin: 0 0 .55rem 0;
-  }
-
-  h1 {
-    font-size: 3rem;
-    line-height: 1.04;
-    margin: 0 0 .8rem 0;
-    letter-spacing: -0.02em;
-  }
-
-  .sub {
-    font-size: 1.16rem;
-    line-height: 1.6;
-    color: rgba(0,0,0,.72);
-    max-width: 66ch;
-    margin: 0;
-  }
-
-  .heroButtons {
-    display: flex;
-    gap: .8rem;
-    flex-wrap: wrap;
-    margin-top: 1.2rem;
-  }
+  .heroGrid { display: grid; gap: 1.5rem; grid-template-columns: 1.3fr .9fr; align-items: center; }
+  h1 { font-size: 3rem; line-height: 1.04; margin: 0; letter-spacing: -0.02em; }
+  .sub { font-size: 1.16rem; line-height: 1.6; color: rgba(0,0,0,.72); max-width: 66ch; margin-top: 0.5rem; }
 
   .btn {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    padding: .82rem 1.1rem;
-    border-radius: 18px;
-    text-decoration: none;
-    font-weight: 700;
-    font-size: .98rem;
-    border: 1px solid rgba(0,0,0,.10);
-    transition: transform .15s ease, background .15s ease;
+    display: inline-flex; align-items: center; justify-content: center;
+    padding: .82rem 1.1rem; border-radius: 18px; text-decoration: none;
+    font-weight: 700; background: #111827; color: white;
+    border: 1px solid #111827; transition: transform .15s ease;
   }
-
+  .btnSecondary { background: white; color: #111827; border-color: rgba(0,0,0,.1); }
   .btn:hover { transform: translateY(-1px); }
+<<<<<<< HEAD
   .btnPrimary {
     background: #111827;
     color: white;
@@ -353,36 +296,43 @@ const stats = [
     font-size: .93rem;
     line-height: 1.35;
   }
+=======
+>>>>>>> fcda4eb9722a2878fad0fb2ef4ab90dd90ba3f40
 
-  .emptyTopic {
-    margin: .75rem 0 0 0;
-    color: rgba(0,0,0,.62);
-    line-height: 1.55;
-  }
+  .statsGrid { display: grid; grid-template-columns: repeat(2, 1fr); gap: .9rem; }
+  .statCard { border-radius: 22px; background: rgba(255,255,255,.94); border: 1px solid rgba(0,0,0,.06); padding: 1rem; }
+  .statValue { font-size: 2rem; font-weight: 800; margin: 0; }
 
+<<<<<<< HEAD
   .projectCard.isHidden {
     display: none;
   }
+=======
+  .topicMap { border-radius: 24px; background: rgba(255,255,255,.94); border: 1px solid rgba(0,0,0,.06); padding: 1.3rem; margin-bottom: 2rem; }
+  .topicPills { display: flex; flex-wrap: wrap; gap: .55rem; margin-top: 1rem; }
+  .topicPill { border-radius: 999px; padding: .48rem .78rem; font-size: .92rem; text-decoration: none; border: 1px solid rgba(0,0,0,.10); background: white; color: rgba(0,0,0,.74); }
+  .topicPill.active { background: #111827; color: white; }
+>>>>>>> fcda4eb9722a2878fad0fb2ef4ab90dd90ba3f40
 
-  .projectsGrid {
-    display: grid;
-    gap: 1.25rem;
+  .topicResult { display: none; margin-top: 1.5rem; padding: 1rem; background: rgba(0,0,0,.02); border-radius: 20px; }
+  .topicResult.active { display: block; }
+  .topicResultGrid { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; }
+
+  .resultLink {
+    display: block; margin-top: 8px; padding: 10px 14px; background: white;
+    border: 1px solid rgba(0,0,0,0.08); border-radius: 12px;
+    text-decoration: none; color: #111827; font-size: 0.95rem; font-weight: 600;
+    transition: all 0.2s ease; box-shadow: 0 2px 4px rgba(0,0,0,0.02);
   }
+  .resultLink:hover { background: #f9fafb; border-color: rgba(0,0,0,0.15); transform: translateY(-1px); box-shadow: 0 4px 8px rgba(0,0,0,0.05); }
+  .resultLink small { display: block; font-weight: 400; color: #666; font-size: 0.85rem; margin-top: 2px; }
 
-  .projectCard {
-    border-radius: 24px;
-    background: rgba(255,255,255,.94);
-    border: 1px solid rgba(0,0,0,.06);
-    box-shadow: 0 12px 28px rgba(0,0,0,.07);
-    padding: 1.5rem;
-  }
+  .projectsGrid { display: grid; gap: 1.25rem; }
+  .projectCard { border-radius: 24px; background: white; border: 1px solid rgba(0,0,0,.06); padding: 1.5rem; box-shadow: 0 12px 28px rgba(0,0,0,.07); }
+  .projectCard.isHidden { display: none; }
+  .projectGrid { display: grid; grid-template-columns: 1.2fr .8fr; gap: 1.5rem; }
 
-  .projectGrid {
-    display: grid;
-    gap: 1.25rem;
-    grid-template-columns: 1.1fr .9fr;
-  }
-
+<<<<<<< HEAD
   /* --- MEDIA STYLES --- */
   .mediaContainer {
     margin-top: 1.2rem;
@@ -417,110 +367,18 @@ const stats = [
     background: rgba(0,0,0,.03);
     font-weight: 700;
   }
+=======
+  .badge { border-radius: 999px; padding: .4rem .8rem; font-size: .85rem; font-weight: 700; background: #f3f4f6; border: 1px solid rgba(0,0,0,.08); }
+  .badgeActive { background: #ecfdf5; color: #047857; border-color: #bbf7d0; }
+  
+  .mediaContainer { margin-top: 1.2rem; border-radius: 18px; overflow: hidden; background: #000; border: 1px solid rgba(0,0,0,0.05); }
+  .mediaContainer video, .mediaContainer img { width: 100%; height: auto; display: block; object-fit: cover; }
+>>>>>>> fcda4eb9722a2878fad0fb2ef4ab90dd90ba3f40
 
-  .badgeActive {
-    background: #ecfdf5;
-    border-color: #bbf7d0;
-    color: #047857;
-  }
+  .memberLink { display: block; padding: .85rem 1rem; text-decoration: none; color: #111827; border-radius: 16px; background: white; border: 1px solid rgba(0,0,0,.07); margin-top: 0.5rem; transition: transform 0.15s ease; }
+  .memberLink:hover { transform: translateY(-1px); background: rgba(0,0,0,.01); }
 
-  .projectTitle {
-    margin: 0;
-    font-size: 1.7rem;
-    font-weight: 800;
-    letter-spacing: -0.02em;
-  }
-
-  .projectText {
-    margin: .85rem 0 0 0;
-    color: rgba(0,0,0,.7);
-    line-height: 1.7;
-    font-size: 1rem;
-  }
-
-  .projectLink {
-    display: inline-flex;
-    align-items: center;
-    justify-content: center;
-    margin-top: 1rem;
-    border-radius: 16px;
-    padding: .68rem .9rem;
-    text-decoration: none;
-    font-size: .95rem;
-    font-weight: 800;
-    border: 1px solid rgba(0,0,0,.10);
-    background: #111827;
-    color: white;
-    transition: transform .15s ease, background .15s ease;
-  }
-
-  .projectLink:hover,
-  .projectLink:focus-visible {
-    transform: translateY(-1px);
-    background: #1f2937;
-  }
-
-  .publicationBlock {
-    margin-top: 1rem;
-    border-radius: 18px;
-    border: 1px solid rgba(0,0,0,.07);
-    background: rgba(0,0,0,.02);
-    padding: .9rem;
-  }
-
-  .publicationList {
-    display: grid;
-    gap: .65rem;
-    margin-top: .7rem;
-  }
-
-  .publicationButton {
-    display: block;
-    border-radius: 14px;
-    padding: .75rem .85rem;
-    border: 1px solid rgba(0,0,0,.08);
-    background: white;
-    color: rgba(0,0,0,.86);
-    text-decoration: none;
-    transition: transform .15s ease, border-color .15s ease;
-  }
-
-  .publicationButton:hover,
-  .publicationButton:focus-visible {
-    transform: translateY(-1px);
-    border-color: rgba(0,0,0,.18);
-  }
-
-  .publicationTitle {
-    margin: 0;
-    font-size: .98rem;
-    font-weight: 800;
-    line-height: 1.4;
-  }
-
-  .publicationMeta {
-    margin: .24rem 0 0 0;
-    color: rgba(0,0,0,.58);
-    font-size: .92rem;
-    line-height: 1.35;
-  }
-
-  .tagRow {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .5rem;
-    margin-top: 1rem;
-  }
-
-  .tag {
-    border-radius: 999px;
-    padding: .38rem .75rem;
-    font-size: .9rem;
-    border: 1px solid rgba(0,0,0,.08);
-    background: white;
-    color: rgba(0,0,0,.72);
-  }
-
+<<<<<<< HEAD
   .metaGrid {
     display: grid;
     gap: .8rem;
@@ -849,6 +707,113 @@ const stats = [
         ))}
       </div>
     </section>
+=======
+  @media (max-width: 1000px) { .heroGrid, .projectGrid, .topicResultGrid { grid-template-columns: 1fr; } }
+</style>
+
+<SiteLayout title="Projects | Systems Structural Biology Group">
+  <main class="wrap">
+    <section class="hero">
+      <div class="heroGrid">
+        <div>
+          <p style="text-transform: uppercase; letter-spacing: .16em; font-size: .92rem; color: rgba(0,0,0,.55);">Systems Structural Biology Group</p>
+          <h1>Active Projects</h1>
+          <p class="sub">Exploring the intersection of structural biology and human-centered AI.</p>
+          <div style="margin-top: 1.5rem; display: flex; gap: 10px;">
+            <a href="#projects" class="btn">Browse projects</a>
+            <a href={withBase("people")} class="btn btnSecondary">View people</a>
+          </div>
+        </div>
+        <div class="statsGrid">
+          {stats.map((stat) => (
+            <div class="statCard">
+              <p style="margin:0; font-size:.9rem; color:#666;">{stat.label}</p>
+              <p class="statValue">{stat.value}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <section id="topic-map" class="topicMap">
+      <h2 style="margin:0;">Topic Map</h2>
+      <p style="color: #666; margin-bottom: 1.5rem;">Filter projects and people by research area:</p>
+      
+      <div class="topicPills">
+        {topicSummaries.map((topic) => (
+          <a class="topicPill" href={`?topic=${topic.slug}#topic-map`} data-topic-link={topic.slug} data-topic-label={topic.label}>{topic.label}</a>
+        ))}
+      </div>
+
+      {topicSummaries.map((topic) => (
+        <div class="topicResult" data-topic-result={topic.slug}>
+          <div class="topicResultGrid">
+            <div>
+              <strong style="font-size: 0.8rem; text-transform: uppercase; color: #666;">Projects</strong>
+              {topic.projects.length > 0 ? topic.projects.map(p => (
+                <a href={`#${p.id}`} class="resultLink">{p.data.title}<small>{p.data.phase}</small></a>
+              )) : <p style="font-style: italic; color: #999; margin-top: 10px;">No projects found.</p>}
+            </div>
+            <div>
+              <strong style="font-size: 0.8rem; text-transform: uppercase; color: #666;">People</strong>
+              {topic.people.map(person => (
+                <a href={withBase(person.href)} class="resultLink">{person.name}<small>{person.role}</small></a>
+              ))}
+            </div>
+          </div>
+        </div>
+      ))}
+    </section>
+
+    <div class="projectsGrid" id="projects">
+      {projectEntries.map((project) => (
+        <article class="projectCard" id={project.id} data-project-topics={projectTopicMap[project.id].join(" ")}>
+          <div class="projectGrid">
+            <div>
+              <div style="margin-bottom: 10px;">
+                <span class={`badge ${project.data.status === 'Active' ? 'badgeActive' : ''}`}>{project.data.status}</span>
+                <span class="badge" style="margin-left: 5px;">{project.data.phase}</span>
+              </div>
+              <h2 style="margin:0; font-size: 1.7rem;">{project.data.title}</h2>
+              <p style="line-height: 1.7; color: #444; margin-top: 1rem;">{project.data.summary}</p>
+              
+              {(project.data.video || project.data.thumbnail) && (
+                <div class="mediaContainer">
+                  {project.data.video ? <video src={withBase(project.data.video)} controls muted loop playsinline /> 
+                                      : <img src={withBase(project.data.thumbnail)} alt={project.data.title} />}
+                </div>
+              )}
+
+              <div class="tagRow">
+                {project.data.tags?.map((tag) => (
+                  <span class="tag">{tag}</span>
+                ))}
+              </div>
+            </div>
+
+            <div class="sideStack">
+              <div class="statCard">
+                <p style="font-size: .88rem; text-transform: uppercase; font-weight: 700; color: #999; margin: 0 0 10px;">Team Members</p>
+                {project.data.team.map((member) => (
+                  <a href={withBase(member.href)} class="memberLink">
+                    <p style="margin:0; font-weight:700;">{member.name}</p>
+                    <p style="margin:0; font-size: .9rem; color: #666;">{member.role}</p>
+                  </a>
+                ))}
+              </div>
+              {project.data.updates && project.data.updates.length > 0 && (
+                <div class="statCard" style="margin-top:10px;">
+                  <p style="font-size: .88rem; text-transform: uppercase; font-weight: 700; color: #999; margin: 0 0 10px;">Recent Progress</p>
+                  <ul style="padding-left:20px; margin:0; font-size: .95rem; line-height: 1.6; color: #555;">
+                    {project.data.updates.map(u => <li>{u}</li>)}
+                  </ul>
+                </div>
+              )}
+            </div>
+          </div>
+        </article>
+      ))}
+>>>>>>> fcda4eb9722a2878fad0fb2ef4ab90dd90ba3f40
     </div>
   </main>
 
@@ -856,48 +821,26 @@ const stats = [
     const topicLinks = Array.from(document.querySelectorAll("[data-topic-link]"));
     const topicResults = Array.from(document.querySelectorAll("[data-topic-result]"));
     const projectCards = Array.from(document.querySelectorAll("[data-project-topics]"));
-    const topicHeading = document.querySelector("[data-topic-heading]");
-
-    const getSelectedTopic = () => new URLSearchParams(window.location.search).get("topic") || "";
 
     const showTopic = (topicSlug) => {
-      const selectedLink = topicLinks.find((link) => link.dataset.topicLink === topicSlug);
-      const selectedLabel = selectedLink?.dataset.topicLabel;
-
-      topicLinks.forEach((link) => {
-        link.classList.toggle("active", link.dataset.topicLink === topicSlug);
+      topicLinks.forEach(l => l.classList.toggle("active", (l as HTMLElement).dataset.topicLink === topicSlug));
+      topicResults.forEach(r => r.classList.toggle("active", (r as HTMLElement).dataset.topicResult === topicSlug));
+      projectCards.forEach(c => {
+        const topics = (c as HTMLElement).dataset.projectTopics?.split(" ") || [];
+        c.classList.toggle("isHidden", !!topicSlug && !topics.includes(topicSlug));
       });
-
-      topicResults.forEach((result) => {
-        result.classList.toggle("active", result.dataset.topicResult === topicSlug);
-      });
-
-      projectCards.forEach((card) => {
-        const topics = card.dataset.projectTopics?.split(" ").filter(Boolean) ?? [];
-        card.classList.toggle("isHidden", Boolean(topicSlug) && !topics.includes(topicSlug));
-      });
-
-      if (topicHeading) {
-        topicHeading.textContent = selectedLabel
-          ? `${selectedLabel}: projects and people`
-          : "Choose a topic to see linked projects and people";
-      }
     };
 
-    topicLinks.forEach((link) => {
-      link.addEventListener("click", (event) => {
-        const topicSlug = link.dataset.topicLink;
-        if (!topicSlug) return;
-
-        event.preventDefault();
-        const nextUrl = `${window.location.pathname}?topic=${topicSlug}#topic-map`;
-        window.history.pushState({}, "", nextUrl);
-        showTopic(topicSlug);
-        document.querySelector("#topic-map")?.scrollIntoView({ behavior: "smooth", block: "start" });
+    topicLinks.forEach(link => {
+      link.addEventListener("click", (e) => {
+        e.preventDefault();
+        const slug = (link as HTMLElement).dataset.topicLink || "";
+        showTopic(slug);
+        window.history.pushState({}, "", `?topic=${slug}#topic-map`);
       });
     });
 
-    window.addEventListener("popstate", () => showTopic(getSelectedTopic()));
-    showTopic(getSelectedTopic());
+    const urlParams = new URLSearchParams(window.location.search);
+    if (urlParams.has("topic")) showTopic(urlParams.get("topic") || "");
   </script>
 </SiteLayout>
