@@ -2,13 +2,20 @@
 // src/pages/people.astro
 import { getCollection } from "astro:content";
 import SiteLayout from "../../layouts/SiteLayout.astro";
-import { uploadPath } from "../../lib/site";
+import { uploadPath, withBase } from "../../lib/site";
 
 const peopleEntries = await getCollection("people");
 
 /** --- Categorization rules (edit keywords anytime) --- */
 function categorize(role = "") {
   const r = role.toLowerCase();
+
+  if (
+    r.includes("alumni") ||
+    r.includes("alumnus") ||
+    r.includes("alumna") ||
+    r.includes("former")
+  ) return "Alumni";
 
   if (
     r.includes("principal investigator") ||
@@ -40,7 +47,7 @@ function categorize(role = "") {
     r.includes("ug") ||
     r.includes("assistant") ||
     r.includes("intern")
-  ) return "Undergraduate Assistants";
+  ) return "Undergraduate Students";
 
   return "Other";
 }
@@ -48,7 +55,8 @@ function categorize(role = "") {
 const grouped = {
   "Senior Personnel": [],
   "Graduate Students": [],
-  "Undergraduate Assistants": [],
+  "Undergraduate Students": [],
+  "Alumni": [],
   "Other": [],
 };
 
@@ -60,17 +68,33 @@ for (const k of Object.keys(grouped)) {
   grouped[k].sort((a, b) => (a.data.name ?? "").localeCompare(b.data.name ?? ""));
 }
 
-const sectionOrder = ["Senior Personnel", "Graduate Students", "Undergraduate Assistants", "Other"];
+const sectionOrder = ["Senior Personnel", "Graduate Students", "Undergraduate Students", "Alumni", "Other"];
 const showOther = grouped["Other"].length > 0;
+const sectionSlug = (sectionName = "") => sectionName.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+const visibleSections = sectionOrder.filter((sectionName) => {
+  if (sectionName === "Other" && !showOther) return false;
+  if (["Undergraduate Students", "Alumni"].includes(sectionName)) return true;
+  return (grouped[sectionName] ?? []).length > 0;
+});
 
 const base = import.meta.env.BASE_URL;
 const assetPath = (path = "") => uploadPath(base, path);
+const sitePath = (path = "") => withBase(base, path);
 const placeholderImage = assetPath("logo.png");
+
+const researchAreas = [
+  { label: "Structural Biology", href: sitePath("/projects?topic=structural-biology#topic-map") },
+  { label: "Complex Systems", href: sitePath("/projects?topic=complex-systems#topic-map") },
+  { label: "Multiscale Modeling", href: sitePath("/projects?topic=multiscale-modeling#topic-map") },
+  { label: "Applied Deep Learning", href: sitePath("/projects?topic=applied-deep-learning#topic-map") },
+  { label: "Human Computer Interaction", href: sitePath("/projects?topic=human-computer-interaction#topic-map") },
+];
 ---
 
 <style>
   :global(html) { font-family: Arial, Helvetica, sans-serif; }
   :global(body) { background: #f6f7fb; margin: 0; color: rgba(0,0,0,.9); }
+  :global([id]) { scroll-margin-top: 104px; }
 
   .topbar {
     position: sticky;
@@ -222,9 +246,62 @@ const placeholderImage = assetPath("logo.png");
   }
 
   .wrap {
-    max-width: 1240px;
+    max-width: 1440px;
     margin: 0 auto;
     padding: 2.25rem 1.25rem 3rem 1.25rem;
+    display: grid;
+    grid-template-columns: 230px minmax(0, 1fr);
+    gap: 1.4rem;
+    align-items: start;
+  }
+
+  .contentNav {
+    position: sticky;
+    top: 84px;
+    border-radius: 18px;
+    border: 1px solid rgba(0,0,0,.07);
+    background: rgba(255,255,255,.86);
+    box-shadow: 0 10px 24px rgba(0,0,0,.06);
+    padding: 1rem;
+    max-height: calc(100vh - 110px);
+    overflow: auto;
+  }
+
+  .contentNavTitle {
+    margin: 0 0 .75rem 0;
+    font-size: .92rem;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: rgba(0,0,0,.55);
+    font-weight: 800;
+  }
+
+  .contentNavList {
+    display: grid;
+    gap: .25rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .contentNavLink {
+    display: block;
+    border-radius: 10px;
+    padding: .48rem .55rem;
+    color: rgba(0,0,0,.72);
+    text-decoration: none;
+    font-size: .94rem;
+    line-height: 1.35;
+  }
+
+  .contentNavLink:hover,
+  .contentNavLink:focus-visible {
+    background: rgba(0,0,0,.05);
+    color: rgba(0,0,0,.92);
+  }
+
+  .contentColumn {
+    min-width: 0;
   }
 
   .hero {
@@ -262,20 +339,31 @@ const placeholderImage = assetPath("logo.png");
     margin: 0;
   }
 
-  .chips {
-    display: flex;
-    flex-wrap: wrap;
-    gap: .55rem;
+  .topicSelectWrap {
+    display: grid;
+    gap: .38rem;
     margin-top: 1rem;
+    max-width: 360px;
   }
 
-  .chip {
-    font-size: 0.98rem;
-    padding: .45rem .75rem;
-    border-radius: 999px;
+  .topicSelectLabel {
+    margin: 0;
+    font-size: .86rem;
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    color: rgba(0,0,0,.5);
+    font-weight: 700;
+  }
+
+  .topicSelect {
+    width: 100%;
+    border-radius: 14px;
     border: 1px solid rgba(0,0,0,.10);
-    background: rgba(255,255,255,.75);
-    color: rgba(0,0,0,.72);
+    background: white;
+    color: rgba(0,0,0,.86);
+    padding: .72rem .9rem;
+    font-size: .96rem;
+    line-height: 1.2;
   }
 
   .section { margin-top: 1.75rem; }
@@ -294,8 +382,29 @@ const placeholderImage = assetPath("logo.png");
     gap: 1.25rem;
     grid-template-columns: repeat(3, minmax(0, 1fr));
   }
-  @media (max-width: 1000px) { .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
-  @media (max-width: 640px)  { .grid { grid-template-columns: 1fr; } h1 { font-size: 2.3rem; } .hero { padding: 2rem 1.4rem; } }
+
+  .emptySection {
+    border-radius: 22px;
+    background: rgba(255,255,255,.94);
+    border: 1px solid rgba(0,0,0,.06);
+    box-shadow: 0 12px 28px rgba(0,0,0,.07);
+    padding: 1.2rem;
+    color: rgba(0,0,0,.66);
+    line-height: 1.6;
+    margin: 0;
+  }
+  @media (max-width: 1000px) {
+    .wrap { grid-template-columns: 1fr; }
+    .contentNav { position: static; max-height: none; }
+    .contentNavList { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  }
+  @media (max-width: 640px)  {
+    .grid { grid-template-columns: 1fr; }
+    .contentNavList { grid-template-columns: 1fr; }
+    h1 { font-size: 2.3rem; }
+    .hero { padding: 2rem 1.4rem; }
+  }
 
   .card {
     border-radius: 22px;
@@ -500,31 +609,56 @@ const placeholderImage = assetPath("logo.png");
 
 <SiteLayout title="People | Systems Structural Biology Group">
 <main class="wrap">
+  <aside class="contentNav" aria-label="People contents">
+    <p class="contentNavTitle">Contents</p>
+    <ol class="contentNavList">
+      {visibleSections.map((sectionName) => (
+        <li><a class="contentNavLink" href={`#${sectionSlug(sectionName)}`}>{sectionName}</a></li>
+      ))}
+    </ol>
+  </aside>
+
+  <div class="contentColumn">
   <section class="hero">
     <p class="kicker">Our Team</p>
     <h1>People</h1>
     <p class="sub">Human-centered AI science for structural discovery and complex systems.</p>
-    <div class="chips">
-      <span class="chip">Structural biology</span>
-      <span class="chip">Complex systems</span>
-      <span class="chip">Human-centered data science</span>
+    <div class="topicSelectWrap">
+      <label class="topicSelectLabel" for="people-research-area">Research area</label>
+      <select
+        id="people-research-area"
+        class="topicSelect"
+        onchange="if (this.value) window.location.href=this.value"
+      >
+        <option value="">Choose a research area</option>
+        {researchAreas.map((area) => (
+          <option value={area.href}>{area.label}</option>
+        ))}
+      </select>
     </div>
   </section>
 
   {sectionOrder.map((sectionName) => {
     if (sectionName === "Other" && !showOther) return null;
     const sectionPeople = grouped[sectionName] ?? [];
-    if (sectionPeople.length === 0) return null;
+    if (sectionPeople.length === 0 && !["Undergraduate Students", "Alumni"].includes(sectionName)) return null;
 
     return (
-      <section class="section">
+      <section id={sectionSlug(sectionName)} class="section">
         <div class="sectionHead">
           <h2 class="sectionTitle">{sectionName}</h2>
           <p class="count">{sectionPeople.length} member{sectionPeople.length === 1 ? "" : "s"}</p>
         </div>
 
-        <div class="grid">
-          {sectionPeople.map((p) => (
+        {sectionPeople.length === 0 ? (
+          <p class="emptySection">
+            {sectionName === "Undergraduate Students"
+              ? "No undergraduate students listed yet."
+              : "No alumni entries listed yet."}
+          </p>
+        ) : (
+          <div class="grid">
+            {sectionPeople.map((p) => (
             <article class="card">
               <div class="cardInner">
                 <div class="top">
@@ -609,13 +743,15 @@ const placeholderImage = assetPath("logo.png");
                 </div>
               </div>
             </article>
-          ))}
-        </div>
+            ))}
+          </div>
+        )}
 
         <div class="divider"></div>
       </section>
     );
   })}
+  </div>
 </main>
 
 <script>
